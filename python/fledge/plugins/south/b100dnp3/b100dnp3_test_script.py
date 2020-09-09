@@ -1,7 +1,10 @@
+""" Simple test script to assist in debugging any DNP3 protocol issues
+"""
+
 from dnp3_master import Dnp3_Master
 import time
 
-OUTSTATION_IP = "192.168.69.166"
+OUTSTATION_IP = "192.168.1.100"
 OUTSTATION_ID = 10
 
 def create_Dnp3_Master():

@@ -1,5 +1,13 @@
 from pydnp3 import opendnp3, openpal, asiopal, asiodnp3
 import time
+import logging
+
+from fledge.common import logger
+from fledge.plugins.common import utils
+from fledge.services.south import exceptions
+
+_LOGGER = logger.setup(__name__, level=logging.INFO)
+""" Setup the access to the logging system of fledge """
 
 # The sequence of events handler - this receives measurment
 # data from the master and prints it to the console. We need
@@ -19,9 +27,6 @@ class SOEHandler(opendnp3.ISOEHandler):
         super(SOEHandler, self).__init__()
 
     def Process(self, info, values):
-        # print("SOE processing")
-        # print(f'values {values.Count()}\ttype: {type(values)}')
-
         a_vals = []
         b_vals = []
                
@@ -30,7 +35,6 @@ class SOEHandler(opendnp3.ISOEHandler):
                 def __init__(self):
                     super(BOSVisitor, self).__init__()
                 def OnValue(self, indexed_instance):
-                    #print(f'({indexed_instance.index}, {indexed_instance.value.value})')
                     a_vals.append(indexed_instance.value.value)
             values.Foreach(BOSVisitor())
             self.values['analog'] = a_vals.copy()
@@ -40,14 +44,10 @@ class SOEHandler(opendnp3.ISOEHandler):
                 def __init__(self):
                     super(BOSVisitorBin, self).__init__()
                 def OnValue(self, indexed_instance):
-                    #print(f'({indexed_instance.index}, {indexed_instance.value.value})')
                     b_vals.append(indexed_instance.value.value)
             values.Foreach(BOSVisitorBin())
             self.values['binary'] = b_vals.copy()
 
-        # print(f'a_vals: {len(a_vals)} b_vals: {len(b_vals)}')
-        # print(f'a: {len(self.values["analog"])} b: {len(self.values["binary"])}')
-    
 
     def Start(self):
         # This is implementing an interface, so this function
@@ -61,7 +61,8 @@ class SOEHandler(opendnp3.ISOEHandler):
 
 
 
-class Dnp3_Master:
+class Dnp3_Master():
+    
     _values ={'analog': [],'binary': []}
 
     def _setValues(self, values):
@@ -73,7 +74,7 @@ class Dnp3_Master:
     values = property(_getValues, _setValues)
 
     def __init__(self,outstation_ip, outstation_id):
-
+        
         self._soe_handler = SOEHandler()
         self._soe_handler.values = self.values
 

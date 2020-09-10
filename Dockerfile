@@ -4,7 +4,7 @@
 FROM ubuntu:18.04 as build
 
 # Install CMAKE required to build OpenDNP3
-RUN apt update && apt install wget build-essential libssl-dev git sed -y
+RUN apt update && apt upgrade -y  && apt install wget build-essential libssl-dev git sed iputils-ping telnet -y
 RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v3.18.2/cmake-3.18.2.tar.gz
 RUN tar xvzf cmake-3.18.2.tar.gz
 RUN cd cmake-3.18.2
@@ -125,7 +125,7 @@ RUN  ./scripts/certificates fledge 365 && \
     pip3 install -r /usr/local/fledge/python/requirements-modbustcp.txt && \
     pip3 install -r /usr/local/fledge/python/requirements-mqtt_sparkplug.txt
     
-RUN echo '192.168.69.167 seeeduino1' >> /etc/hosts
+RUN echo '192.168.69.166 seeeduino1' >> /etc/hosts
 
 ENV FLEDGE_ROOT=/usr/local/fledge
 

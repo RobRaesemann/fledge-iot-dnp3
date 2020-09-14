@@ -4,7 +4,7 @@
 FROM ubuntu:18.04 as build
 
 # Install CMAKE required to build OpenDNP3
-RUN apt update && apt upgrade -y  && apt install wget build-essential libssl-dev git sed iputils-ping telnet -y
+RUN apt update && apt upgrade -y  && apt install wget build-essential libssl-dev git -y
 RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v3.18.2/cmake-3.18.2.tar.gz
 RUN tar xvzf cmake-3.18.2.tar.gz
 RUN cd cmake-3.18.2
@@ -41,7 +41,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 COPY --from=build /tmp_cmake /
 COPY --from=build /tmp_dnp3 /
 
-RUN apt update && apt install wget rsyslog python3 python3-pip build-essential libssl-dev python-dev python3-dev git nano -y && \
+RUN apt update && apt upgrade -y && apt install wget rsyslog python3 python3-pip build-essential libssl-dev python-dev python3-dev git nano sed iputils-ping inetutils-telnet -y && \
     wget --no-check-certificate https://fledge-iot.s3.amazonaws.com/1.8.1/ubuntu1804/x86_64/fledge-1.8.1_x86_64_ubuntu1804.tgz && \
     tar -xzvf fledge-1.8.1_x86_64_ubuntu1804.tgz && \
     # Install any dependenies for the .deb file
@@ -125,7 +125,7 @@ RUN  ./scripts/certificates fledge 365 && \
     pip3 install -r /usr/local/fledge/python/requirements-modbustcp.txt && \
     pip3 install -r /usr/local/fledge/python/requirements-mqtt_sparkplug.txt
     
-RUN echo '192.168.69.166 seeeduino1' >> /etc/hosts
+#RUN echo '192.168.69.167 seeeduino1' >> /etc/hosts
 
 ENV FLEDGE_ROOT=/usr/local/fledge
 
